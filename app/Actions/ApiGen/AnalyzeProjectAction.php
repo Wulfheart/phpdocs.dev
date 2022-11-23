@@ -1,24 +1,27 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\ApiGen;
 
 use ApiGen\Analyzer;
 use ApiGen\Analyzer\AnalyzeResult;
+use ApiGen\Analyzer\NodeVisitors\PhpDocResolver;
 use ApiGen\Locator;
-use PhpParser\Lexer;
-use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\ParserFactory;
+use PHPStan\PhpDocParser\Parser\ConstExprParser;
+use PHPStan\PhpDocParser\Parser\PhpDocParser;
+use PHPStan\PhpDocParser\Parser\TypeParser;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 
-class IndexProjectAction
+class AnalyzeProjectAction
 {
     public function execute(string $projectDir): AnalyzeResult {
+
         $output = new NullOutput();
         $outputStyle = new SymfonyStyle(new StringInput(''), $output);
         // Build analyzer
@@ -26,10 +29,18 @@ class IndexProjectAction
         $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new Analyzer\NodeVisitors\BodySkipper());
-        $nodeTraverser->addVisitor(new NameResolver());
+        $nameResolver = new NameResolver();
+        $nodeTraverser->addVisitor($nameResolver);
 
         $phpdocparserlexer = new \PHPStan\PhpDocParser\Lexer\Lexer();
-        $phpdocparser = new \PHPStan\PhpDocParser\Parser\PhpDocParser();
+
+        $constExprParser = new ConstExprParser();
+        $typeParser = new TypeParser($constExprParser);
+        $phpdocparser = new PhpDocParser($typeParser, $constExprParser, true);
+
+        $nodeTraverser->addVisitor(new PhpDocResolver($phpdocparserlexer, $phpdocparser, $nameResolver->getNameContext()));
+
+
         $filter = new Analyzer\Filter(false, false, []);
 
         $analyzer = new Analyzer($locator, $parser, $nodeTraverser, $filter);

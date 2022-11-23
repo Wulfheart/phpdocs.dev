@@ -14,12 +14,11 @@ class CreatePackagesTable extends Migration
     public function up()
     {
         Schema::create('packages', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('vendor');
             $table->string('package');
             $table->string('repository_url');
             $table->string('license')->nullable();
-            $table->string('package_url');
             $table->timestamps();
         });
     }
