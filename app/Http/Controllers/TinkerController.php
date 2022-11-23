@@ -30,8 +30,11 @@ class TinkerController extends Controller
         $version = $package->versions->first();
 
         $index = $this->retrieveIndexAction->execute($version);
+        //dd($index->namespace);
 
-        dd($s);
+        return view('docs.index', [
+            'index' => $index,
+        ]);
 
     }
 }
