@@ -1,2 +1,11 @@
+created:
+    - database/factories/PackageFactory.php
+    - database/factories/PackageVersionFactory.php
+    - database/migrations/2022_11_22_222711_create_packages_table.php
+    - database/migrations/2022_11_22_222712_create_package_versions_table.php
+    - app/Models/Package.php
+    - app/Models/PackageVersion.php
 models:
     User: { name: string, email: string, email_verified_at: 'datetime nullable', password: string, remember_token: 'string:100 nullable' }
+    Package: { vendor: string, package: string, repository_url: string, license: 'string nullable', package_url: string }
+    PackageVersion: { name: string, dist_url: string, dist_type: string, json_created_at: 'datetime nullable' }
