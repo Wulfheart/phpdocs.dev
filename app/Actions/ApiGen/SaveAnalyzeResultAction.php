@@ -15,7 +15,7 @@ class SaveAnalyzeResultAction
         $path = $uuid . '.serialized.gz';
         Storage::disk('analyzed')->put($path, gzencode(serialize($result)));
 
-        if($packageVersion->serialized_location != null){
+        if($packageVersion->alreadyAnalyzed()){
             Storage::disk('analyzed')->delete($packageVersion->serialized_location);
         }
         $packageVersion->serialized_location = $path;

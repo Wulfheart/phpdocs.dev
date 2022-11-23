@@ -13,4 +13,9 @@ class PackageVersion extends Model
     protected $casts = [
         'serialized_created_at' => 'datetime',
     ];
+
+    public function alreadyAnalyzed(): bool
+    {
+        return $this->serialized_location != null;
+    }
 }

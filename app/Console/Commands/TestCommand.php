@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Actions\ApiGen\AnalyzeProjectAction;
+use App\Actions\ApiGen\RetrieveIndexAction;
 use App\Actions\ApiGen\SaveAnalyzeResultAction;
+use App\Models\Package;
 use Archive_Tar;
 use Illuminate\Console\Command;
 use Illuminate\Support\Benchmark;
@@ -16,29 +18,24 @@ class TestCommand extends Command
 {
     use UsesConsoleToolkit;
 
-    #[Argument('projectDir', 'The project directory to index')]
-    public string $directory;
+    #[Argument('package')]
+    public string $package;
+    #[Argument('version')]
+    public string $version;
 
-    public function handle(AnalyzeProjectAction $indexProjectAction, SaveAnalyzeResultAction $saveAnalyzeResultAction): int
+    public function handle(RetrieveIndexAction $retrieveIndexAction): int
     {
+        [$vendor, $name] = explode('/', $this->argument('package'));
+        $package = Package::with('versions')
+            ->where('vendor', $vendor)
+            ->where('package', $name)
+            ->firstOrFail();
+        $packageVersion = $package->versions()->where('name', $this->argument('version'))->firstOrFail();
 
-        $this->line('Indexing project in ' . realpath($this->directory));
-        $projectdir = realpath($this->directory);
 
-        $result = $indexProjectAction->execute($projectdir);
-        $this->info("Done indexing project");
-        $compressed = gzencode(serialize($result));
-        file_put_contents('test.json', $compressed);
+        $index = $retrieveIndexAction->execute($packageVersion);
 
-        Benchmark::dd(function (){
-           $s = file_get_contents('test.json');
-           $s = gzdecode($s);
-              $r = unserialize($s);
-              var_dump(get_class($r));
-        });
-
-        //$saveAnalyzeResultAction->execute(null, $result);
-
+        //dd($index);
         return Command::SUCCESS;
     }
 }
