@@ -6,6 +6,7 @@ use App\Models\Package;
 use App\Models\PackageVersion;
 use Composer\MetadataMinifier\MetadataMinifier;
 use Illuminate\Support\Facades\Http;
+use Spatie\QueueableAction\QueueableAction;
 
 class InitializePackageFromPackagistAction
 {
@@ -20,6 +21,10 @@ class InitializePackageFromPackagistAction
         }
         $minifiedData = $response->json()['packages']["$vendor/$package"];
         $expanded = MetadataMinifier::expand($minifiedData);
+        if(count($expanded) === 0){
+            logger()->warning("Package {$vendor}/{$package} has no versions");
+            return;
+        }
 
         $package = Package::create([
             'vendor' => $vendor,
@@ -34,9 +39,9 @@ class InitializePackageFromPackagistAction
             PackageVersion::create([
                 'dist_type' => $version['dist']['type'],
                 'dist_url' => $version['dist']['url'],
-                'order' => $i,
                 'name' => $version['version'],
                 'package_id' => $package->id,
+                'published_at' => $version['time'],
             ]);
         }
 

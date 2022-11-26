@@ -17,6 +17,7 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "spatie/laravel-queueable-action": "^2.14",
         "spatie/temporary-directory": "^2.1",
         "thettler/laravel-console-toolkit": "^0.1.1",
         "zanysoft/laravel-zip": "^2.0"
