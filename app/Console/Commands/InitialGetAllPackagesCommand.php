@@ -20,8 +20,9 @@ class InitialGetAllPackagesCommand extends Command
     ): int
     {
         $this->line('Starting initial package fetch');
-        $packageNames = Http::get(config('packagist.base_url') . '/packages/list.json')
-            ->json()['packageNames'];
+        $response = Http::get(config('packagist.base_url') . '/packages/list.json');
+        $response->throw();
+        $packageNames = $response->json()['packageNames'];
         $count = count($packageNames);
         $this->info('Fetched ' . $count . ' packages');
         $progressbar = $this->output->createProgressBar($count);
