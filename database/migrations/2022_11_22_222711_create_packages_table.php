@@ -17,8 +17,16 @@ class CreatePackagesTable extends Migration
             $table->uuid('id')->primary();
             $table->string('vendor');
             $table->string('package');
+            $table->text('description');
             $table->string('repository_url');
             $table->string('license')->nullable();
+            $table->integer('stats_github_stars')->nullable();
+            $table->integer('stats_github_watchers')->nullable();
+            $table->integer('stats_github_forks')->nullable();
+            $table->integer('stats_github_open_issues')->nullable();
+            $table->integer('stats_dependents')->nullable();
+            $table->integer('stats_favers')->nullable();
+            $table->integer('stats_suggesters')->nullable();
             $table->timestamps();
         });
     }

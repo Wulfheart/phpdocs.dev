@@ -17,6 +17,7 @@ class CreatePackageVersionsTable extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('package_id')->constrained();
             $table->string('name');
+            $table->string('name_normalized');
             $table->dateTime('published_at');
             $table->string('dist_url');
             $table->string('dist_type');
