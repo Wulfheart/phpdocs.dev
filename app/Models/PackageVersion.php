@@ -19,4 +19,8 @@ class PackageVersion extends Model
     {
         return $this->serialized_location != null;
     }
+
+    public function isDevVersion(): bool {
+        return str_contains($this->name, 'dev');
+    }
 }

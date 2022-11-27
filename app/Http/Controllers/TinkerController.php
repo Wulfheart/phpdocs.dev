@@ -19,11 +19,6 @@ class TinkerController extends Controller
     }
     public function __invoke(Request $request)
     {
-        $engine = new Engine();
-        $engine->setLoader(new FileLoader(resource_path('latte')));
-
-
-        //$engine->addExtension()
 
         $package = Package::with('versions')->where(['vendor' => 'wulfheart', 'package' => 'pretty_routes'])->firstOrFail();
 

@@ -32,6 +32,10 @@ class AnalyzeCommand extends Command
                 $this->warn("Already analyzed");
                 continue;
             }
+            if($version->isDevVersion()){
+                $this->warn("Skipping dev version {$version->name}");
+                continue;
+            }
             $analyzed = $analyzeProjectAction->execute($version);
             $saveAnalyzeResultAction->execute($version, $analyzed);
         }
