@@ -1,7 +1,7 @@
 <header
     class="sticky top-0 z-50 flex flex-wrap items-center justify-between bg-white px-4 py-5 shadow-md shadow-slate-900/5 transition duration-500 dark:shadow-none sm:px-6 lg:px-8 dark:bg-transparent dark:text-white">
     <div class="relative flex flex-grow basis-0 items-center">
-        <a href="/" class="font-black text-2xl">
+        <a href="/" class="font-black font-display text-2xl">
             phpdocs.dev
         </a>
     </div>
@@ -10,7 +10,7 @@
             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 {{ svg('heroicon-m-magnifying-glass', 'h-5 w-5 text-gray-400 fill-current') }}
             </div>
-            <input type="text" class="block w-full pl-10 rounded-md sm:justify-start md:h-auto md:w-80 md:flex-none md:rounded-lg md:py-2.5 md:pr-3.5 md:text-sm md:ring-1 md:ring-slate-200 md:hover:ring-slate-300 dark:md:bg-slate-800/75 dark:md:ring-inset dark:md:ring-white/5 dark:md:hover:bg-slate-700/40 dark:md:hover:ring-slate-500 lg:w-96" placeholder="you@example.com">
+            <input type="text" class="block w-full pl-10 rounded-md sm:justify-start md:h-auto md:w-80 md:flex-none md:rounded-lg md:py-2.5 md:pr-3.5 md:text-sm md:ring-1 md:ring-slate-200 md:hover:ring-slate-300 dark:md:bg-slate-800/75 dark:md:ring-inset dark:md:ring-white/5 dark:md:hover:bg-slate-700/40 dark:md:hover:ring-slate-500 lg:w-96" placeholder="Search">
         </div>
     </div>
     <div class="relative flex basis-0 justify-end gap-6 sm:gap-8 md:flex-grow">

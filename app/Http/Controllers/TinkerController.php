@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use ApiGen\Renderer\Latte\LatteExtension;
-use ApiGen\Renderer\Latte\LatteFunctions;
 use App\Actions\ApiGen\RetrieveIndexAction;
 use App\Models\Package;
 use App\ViewModels\Navigation;
 use Illuminate\Http\Request;
-use Latte\Engine;
-use Latte\Loaders\FileLoader;
 
 class TinkerController extends Controller
 {
@@ -29,9 +25,8 @@ class TinkerController extends Controller
         $index = $this->retrieveIndexAction->execute($version);
         //dd($index->namespace);
         $nav = Navigation::fromIndex($index);
-        $nav->activate(['ApiGen']);
-        dd($nav);
-        //dd($nav);
+        $nav->activate(['ApiGen', 'Renderer'], new Navigation\ContentInfo("Filter"));
+
 
         return view('docs.index', [
             'index' => $nav,

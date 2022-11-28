@@ -4,10 +4,13 @@ namespace App\ViewModels;
 
 use ApiGen\Index\Index;
 use ApiGen\Index\NamespaceIndex;
+use App\ViewModels\Navigation\ContentInfo;
+use App\ViewModels\Navigation\FunctionInfo;
 use App\ViewModels\Navigation\NamespaceInfo;
 
 class Navigation
 {
+    public NamespaceInfo $current;
 
     public function __construct(
         public NamespaceInfo $rootNamespace,
@@ -27,9 +30,9 @@ class Navigation
     /**
      * @param string[] $namespaces
      */
-    public function activate(array $namespaces): void
+    public function activate(array $namespaces, FunctionInfo|ContentInfo $info = null): void
     {
-        $this->rootNamespace->activate($namespaces);
+        $this->current = $this->rootNamespace->activate($namespaces, $info);
 
     }
 

@@ -22,6 +22,7 @@ class ContentInfo
 
     public function __construct(
         public string $name,
+        public bool   $isActive = false,
     ) {
     }
 
