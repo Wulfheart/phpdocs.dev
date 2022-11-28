@@ -21,7 +21,7 @@ class DocController extends Controller
         string $vendor,
         string $package,
         string $version,
-        string $namespace,
+        ?string $namespace = null,
     ){
         $package = Package::with('versions')
             ->where('vendor', $vendor)
@@ -36,9 +36,16 @@ class DocController extends Controller
 
         $index = $this->retrieveIndexAction->execute($version);
 
-        $namespace = explode(".", $namespace);
 
         $nav = Navigation::fromIndex($index);
+
+        $namespace ??= $nav->rootNamespace->name;
+
+        $namespace = explode(".", $namespace);
+        $nav->activate($namespace);
+        return view('docs.index', [
+            'index' => $nav,
+        ]);
 
     }
 }

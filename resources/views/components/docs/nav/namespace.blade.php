@@ -1,4 +1,4 @@
-@props(['namespace'])
+@props(['namespace', 'url'])
 
 
 @php
@@ -6,7 +6,7 @@
 @endphp
 <li style="margin-left: {{ $namespace->depth * 14 }}px;">
     <a
-        href="#" class="
+        href="{{ $url }}" class="
     @if($namespace->isActive)
     block w-full pl-3.5 font-semibold text-sky-500
     @else
@@ -19,7 +19,7 @@
     @if($namespace->showChildren)
         <ul class="mt-2 space-y-2 lg:mt-4 lg:space-y-4 ">
             @foreach($namespace->children as $child)
-                <x-docs.nav.namespace :namespace="$child"/>
+                <x-docs.nav.namespace :namespace="$child" :url="$url . '.' . $child->name"/>
 
             @endforeach
         </ul>

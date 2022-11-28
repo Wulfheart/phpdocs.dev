@@ -7,7 +7,7 @@
 <nav class="text-base lg:text-sm w-64 pr-8 xl:w-72 xl:pr-16">
     <ul class="space-y-9">
         <x-docs.nav.section name="Namespaces">
-            <x-docs.nav.namespace url="#" :namespace="$index->rootNamespace"/>
+            <x-docs.nav.namespace :url="$index->rootNamespace->name" :namespace="$index->rootNamespace"/>
         </x-docs.nav.section>
         <x-docs.nav.content-info name="Classes" :content-infos="$index->current->classes"/>
         <x-docs.nav.content-info name="Interfaces" :content-infos="$index->current->interfaces"/>

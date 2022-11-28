@@ -18,12 +18,15 @@ Route::get('/', function () {
 });
 
 Route::get('/tinker', \App\Http\Controllers\TinkerController::class);
-Route::prefix('/{vendor}/{package}/{version}/{namespace}')->group(function (){
-    Route::get('/', [\App\Http\Controllers\DocController::class, 'namespace'])->name('namespace');
-    Route::get('/{class}')->name('class');
-    Route::get('/{interface}')->name('interface');
-    Route::get('/{trait}')->name('trait');
-    Route::get('/{enum}')->name('enum');
-    Route::get('/{exception}')->name('exception');
-    Route::get('/{function}')->name('function');
+Route::prefix('/{vendor}/{package}/{version}/')->group(function (){
+    Route::get('{namespace?}/', [\App\Http\Controllers\DocController::class, 'namespace'])->name('namespace');
+    Route::prefix('{namespace}/')->group(function () {
+        Route::get('/{class}')->name('class');
+        Route::get('/{interface}')->name('interface');
+        Route::get('/{trait}')->name('trait');
+        Route::get('/{enum}')->name('enum');
+        Route::get('/{exception}')->name('exception');
+        Route::get('/{function}')->name('function');
+    });
+
 });
