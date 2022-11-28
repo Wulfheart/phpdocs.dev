@@ -11,18 +11,24 @@ use Illuminate\Support\Facades\Storage;
 
 class PackageRepository
 {
+    protected PackageVersion $packageVersion;
     protected Filesystem $filesystem;
     protected string $basedir;
     const KEY_NAVIGATION = "navigation.serialized";
 
     public function __construct(
-        protected PackageVersion $packageVersion,
         protected AnalyzeProjectAction $analyzeProjectAction,
-        protected RetrieveIndexAction $retrieveIndexAction,
+        protected RetrieveIndexAction  $retrieveIndexAction,
     )
     {
-        $this->basedir = $this->packageVersion->id;
         $this->filesystem = Storage::disk('cached');
+    }
+
+    public function set(PackageVersion $packageVersion): self
+    {
+        $this->packageVersion = $packageVersion;
+        $this->basedir = $this->packageVersion->id;
+        return $this;
     }
 
     public function cache(): void
@@ -31,6 +37,9 @@ class PackageRepository
         $index = $this->retrieveIndexAction->index($analyzeResult);
         $nav = Navigation::fromIndex($index);
         $this->storeNavigation($nav);
+
+        $this->packageVersion->cached_at = now();
+        $this->packageVersion->save();
 
     }
 
@@ -43,7 +52,7 @@ class PackageRepository
     public function getNavigation(): Navigation
     {
         $encoded = $this->filesystem->get($this->basedir . DIRECTORY_SEPARATOR . self::KEY_NAVIGATION);
-        return unserialize(gzdecode($encoded), ['allowed_classes' => Navigation::class]);
+        return unserialize(gzdecode($encoded));
     }
 
 }

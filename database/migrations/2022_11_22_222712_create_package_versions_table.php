@@ -21,8 +21,7 @@ class CreatePackageVersionsTable extends Migration
             $table->dateTime('published_at');
             $table->string('dist_url');
             $table->string('dist_type');
-            $table->dateTime('serialized_created_at')->nullable();
-            $table->string('serialized_location')->nullable();
+            $table->dateTime('cached_at')->nullable();
             $table->timestamps();
         });
     }

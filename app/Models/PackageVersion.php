@@ -11,13 +11,13 @@ class PackageVersion extends Model
     use HasFactory, HasUuids;
 
     protected $casts = [
-        'serialized_created_at' => 'datetime',
+        'cached_at' => 'datetime',
         'published_at' => 'datetime',
     ];
 
     public function alreadyAnalyzed(): bool
     {
-        return $this->serialized_location != null;
+        return $this->cached_at !== null && $this->cached_at->lessThan(now());
     }
 
     public function isDevVersion(): bool {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\ApiGen\RetrieveIndexAction;
 use App\Models\Package;
 use App\Models\PackageVersion;
+use App\Repositories\PackageRepository;
 use App\ViewModels\Navigation;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ use Illuminate\Http\Request;
 class DocController extends Controller
 {
     public function __construct(
-        protected RetrieveIndexAction $retrieveIndexAction,
+        protected PackageRepository $packageRepository,
     )
     {
     }
@@ -34,10 +35,8 @@ class DocController extends Controller
             return abort(404);
         }
 
-        $index = $this->retrieveIndexAction->execute($version);
-
-
-        $nav = Navigation::fromIndex($index);
+        $this->packageRepository->set($version);
+        $nav = $this->packageRepository->getNavigation();
 
         $namespace ??= $nav->rootNamespace->name;
 
