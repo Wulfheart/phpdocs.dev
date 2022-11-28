@@ -34,6 +34,11 @@ return [
             'root' => storage_path('app/analyzed'),
         ],
 
+        'cached' => [
+            'driver' => 'local',
+            'root' => storage_path('app/cached'),
+        ],
+
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),

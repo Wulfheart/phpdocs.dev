@@ -24,7 +24,7 @@ class RetrieveIndexAction
 
     }
 
-    protected function index(AnalyzeResult $analyzeResult): Index {
+    public function index(AnalyzeResult $analyzeResult): Index {
         $indexer = new CustomIndexer();
         $index = new Index();
 
