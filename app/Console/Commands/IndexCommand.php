@@ -39,9 +39,8 @@ class IndexCommand extends Command
         $nav = Navigation::fromIndex($index);
 
         $bytes = strlen(json_encode($nav));
-        $this->line(json_encode($nav));
+        $this->line(serialize($nav));
 
-        //dd($index);
         return Command::SUCCESS;
     }
 }

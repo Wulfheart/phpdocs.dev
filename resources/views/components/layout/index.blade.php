@@ -14,7 +14,7 @@
     @vite('resources/css/app.css')
     <title>{{ $title }}</title>
 </head>
-<body class="bg-white dark:bg-slate-900">
+<body class="bg-white dark:bg-slate-900 dark:text-white">
     {{ $slot }}
 </body>
 </html>

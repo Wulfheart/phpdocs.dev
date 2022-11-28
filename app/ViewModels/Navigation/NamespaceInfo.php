@@ -38,7 +38,26 @@ class NamespaceInfo
         public array $functions,
         /** @var NamespaceInfo[] $children */
         public array $children,
+        public bool $showChildren = false,
+        public bool $isActive = false,
     ) {
+    }
+
+    /**
+     * @param string[] $namespaces
+     */
+    public function activate(array $namespaces): void {
+        if (count($namespaces) === 0) {
+            return;
+        }
+        $namespace = array_shift($namespaces);
+        if ($namespace === $this->name) {
+            $this->isActive = true;
+            $this->showChildren = true;
+            foreach ($this->children as $child) {
+                $child->activate($namespaces);
+            }
+        }
     }
 
 }
