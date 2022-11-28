@@ -6,6 +6,8 @@ use App\Actions\ApiGen\RetrieveIndexAction;
 use App\Models\Package;
 use App\ViewModels\Navigation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Benchmark;
+use Karriere\JsonDecoder\JsonDecoder;
 
 class TinkerController extends Controller
 {
@@ -23,9 +25,13 @@ class TinkerController extends Controller
         $version = $package->versions->where('name', 'v7.0.0-alpha.3')->firstOrFail();
 
         $index = $this->retrieveIndexAction->execute($version);
-        //dd($index->namespace);
+
         $nav = Navigation::fromIndex($index);
         $nav->activate(['ApiGen', 'Renderer'], new Navigation\ContentInfo("Filter"));
+
+        $encoded = serialize($nav);
+
+        $encoded = gzencode($encoded);
 
 
         return view('docs.index', [

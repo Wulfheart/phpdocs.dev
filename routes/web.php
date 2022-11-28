@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/tinker', \App\Http\Controllers\TinkerController::class);
-Route::prefix('/{vendor}/{package}/{version}/')->group(function (){
+Route::prefix('/docs/{vendor}/{package}/{version}/')->group(function (){
     Route::get('{namespace?}/', [\App\Http\Controllers\DocController::class, 'namespace'])->name('namespace');
     Route::prefix('{namespace}/')->group(function () {
         Route::get('/{class}')->name('class');
