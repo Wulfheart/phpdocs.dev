@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use ApiGen\Index\Index;
 use ApiGen\Info\ClassInfo;
 use App\Actions\ApiGen\AnalyzeProjectAction;
 use App\Actions\ApiGen\RetrieveIndexAction;
@@ -43,7 +44,7 @@ class PackageRepository
 
         foreach ($index->class as $class)
         {
-            $this->storeClass($class);
+            $this->storeClass($index, $class);
         }
 
         $this->packageVersion->cached_at = now();
@@ -63,25 +64,43 @@ class PackageRepository
         return unserialize(gzdecode($encoded));
     }
 
-    protected function storeClass(ClassInfo $classInfo): void
+    protected function storeClass(Index $index, ClassInfo $classInfo): void
     {
-        $encoded = gzencode(serialize($classInfo));
+        $ci = new \App\ViewModels\Docs\ClassInfo();
+        $ci->original = $classInfo;
+        $extends = $classInfo->extends;
+        if(count($classInfo->implements) > 0){
+            $ci->implements[] = $classInfo->implements;
+        }
+        $classInfo->implements[] = $classInfo->implements;
+        while($extends != null){
+            $class = $index->class[$extends->fullLower];
+            $ci->extends[] = $class;
+            if(count($class->implements) > 0){
+                $ci->implements[] = $class->implements;
+            }
+            $extends = $class->extends;
+        }
+
+
+
+
+
+        $encoded = gzencode(serialize($ci));
         $this->filesystem->put(
             $this->basedir
             . DIRECTORY_SEPARATOR
-            . sprintf(self::KEY_CLASS, str_replace('\\', '.', $classInfo->name->full))
-            . '.serialized',
+            . sprintf(self::KEY_CLASS, str_replace('\\', '.', $classInfo->name->full)),
             $encoded
         );
     }
 
-    public function getClass(string $namespace, string $className): ClassInfo
+    public function getClass(string $namespace, string $className): \App\ViewModels\Docs\ClassInfo
     {
         $encoded = $this->filesystem->get(
             $this->basedir
             . DIRECTORY_SEPARATOR
             . sprintf(self::KEY_CLASS, $namespace . '.' . $className)
-            . '.serialized'
         );
         return unserialize(gzdecode($encoded));
     }
