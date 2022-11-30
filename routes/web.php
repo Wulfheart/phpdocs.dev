@@ -21,7 +21,7 @@ Route::get('/tinker', \App\Http\Controllers\TinkerController::class);
 Route::prefix('/{vendor}/{package}/{version}/')->group(function (){
     Route::get('{namespace?}/', [\App\Http\Controllers\DocController::class, 'namespace'])->name('namespace');
     Route::prefix('{namespace}/')->group(function () {
-        Route::get('/{class}')->name('class');
+        Route::get('/{class}', [\App\Http\Controllers\DocController::class, 'class'])->name('class');
         Route::get('/{interface}')->name('interface');
         Route::get('/{trait}')->name('trait');
         Route::get('/{enum}')->name('enum');

@@ -47,4 +47,35 @@ class DocController extends Controller
         ]);
 
     }
+
+    public function class(
+        string $vendor,
+        string $package,
+        string $version,
+        string $namespace,
+        string $class,
+    ){
+        $package = Package::with('versions')
+            ->where('vendor', $vendor)
+            ->where('package', $package)
+            ->firstOrFail();
+        /** @var PackageVersion $version */
+        $version = $package->versions->where('name', $version)->firstOrFail();
+
+        if(!$version->alreadyAnalyzed()){
+            return abort(404);
+        }
+
+        $this->packageRepository->set($version);
+        $nav = $this->packageRepository->getNavigation();
+        $namespaces = explode(".", $namespace);
+        $nav->activate($namespaces, new Navigation\ClassLikeInfo($class));
+
+        $classInfo = $this->packageRepository->getClass($namespace, $class);
+        dd($classInfo);
+        return view('docs.class', [
+            'index' => $nav,
+        ]);
+
+    }
 }

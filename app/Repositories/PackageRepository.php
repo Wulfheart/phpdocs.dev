@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use ApiGen\Info\ClassInfo;
 use App\Actions\ApiGen\AnalyzeProjectAction;
 use App\Actions\ApiGen\RetrieveIndexAction;
 use App\Models\PackageVersion;
@@ -15,6 +16,7 @@ class PackageRepository
     protected Filesystem $filesystem;
     protected string $basedir;
     const KEY_NAVIGATION = "navigation.serialized";
+    const KEY_CLASS = "classes/%s.serialized";
 
     public function __construct(
         protected AnalyzeProjectAction $analyzeProjectAction,
@@ -35,8 +37,14 @@ class PackageRepository
     {
         $analyzeResult = $this->analyzeProjectAction->execute($this->packageVersion);
         $index = $this->retrieveIndexAction->index($analyzeResult);
+
         $nav = Navigation::fromIndex($index);
         $this->storeNavigation($nav);
+
+        foreach ($index->class as $class)
+        {
+            $this->storeClass($class);
+        }
 
         $this->packageVersion->cached_at = now();
         $this->packageVersion->save();
@@ -52,6 +60,29 @@ class PackageRepository
     public function getNavigation(): Navigation
     {
         $encoded = $this->filesystem->get($this->basedir . DIRECTORY_SEPARATOR . self::KEY_NAVIGATION);
+        return unserialize(gzdecode($encoded));
+    }
+
+    protected function storeClass(ClassInfo $classInfo): void
+    {
+        $encoded = gzencode(serialize($classInfo));
+        $this->filesystem->put(
+            $this->basedir
+            . DIRECTORY_SEPARATOR
+            . sprintf(self::KEY_CLASS, str_replace('\\', '.', $classInfo->name->full))
+            . '.serialized',
+            $encoded
+        );
+    }
+
+    public function getClass(string $namespace, string $className): ClassInfo
+    {
+        $encoded = $this->filesystem->get(
+            $this->basedir
+            . DIRECTORY_SEPARATOR
+            . sprintf(self::KEY_CLASS, $namespace . '.' . $className)
+            . '.serialized'
+        );
         return unserialize(gzdecode($encoded));
     }
 
